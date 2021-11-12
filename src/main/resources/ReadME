@@ -1,0 +1,48 @@
+#Learning References
+What is GraphQL? | Advanced REST Specification
+    https://www.youtube.com/watch?v=6xyZ4Pl5IYg
+
+Spring Boot with GraphQL Query Example
+    https://www.youtube.com/watch?v=zX2I7-aIldE
+
+REST vs GraphQL | When to choose one over other
+    https://www.youtube.com/watch?v=4akSaaEYJqs
+
+Full Course
+    https://www.youtube.com/playlist?list=PL0mgqHWxwZciKccW2CuDX6NNMOZ7ONaH4
+
+#Sample Request url (http://localhost:8091/rest/books)
+{
+    allBooks{
+        title
+        authors
+    }
+    book(id: "124"){
+        title
+        authors
+        publisher
+    }
+}
+
+
+#GraphQL File
+
+#Define schema
+schema {
+    query: Query
+}
+
+#Schema will have two methods allBooks(return array of book) and book by id (return single book)
+type Query {
+ allBooks: [Book]
+ book(id: String): Book
+}
+
+#Book schema the fields of the structure
+type Book {
+  isn: String
+  title: String
+  publisher: String
+  authors: [String]
+  publishedDate: String
+}
