@@ -9,7 +9,7 @@ type Query {
 }
 
 type Mutation{
-    createBook(isn:String,title:String):Book
+    createBook(isn:String,title:String,publisher:String,category:Category):Book
     #addBook(book:BookInput) : Book
 }
 
@@ -25,4 +25,18 @@ type Book {
   publisher: String
   authors: [String]
   publishedDate: String
+    author: Author
+    category:Category
+}
+
+type Author {
+    id:String
+    name:String
+    age:Int
+}
+
+enum Category {
+    HORROR,
+    COMEDY,
+    FANTASY
 }

@@ -1,11 +1,11 @@
 package com.tech.graphql.model;
 
-import com.tech.graphql.constant.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -16,13 +16,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table
 @Entity
-public class Book {
+public class Author {
 
     @Id
-    private String isn;
-    private String title;
-    private String publisher;
-    private String[] authors;
-    private String publishedDate;
-    private Category category;
+    private String id;
+    private String name;
+    private int age;
+    @Column(name = "book_id")
+    private String bookId;
 }

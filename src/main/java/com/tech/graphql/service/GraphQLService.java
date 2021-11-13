@@ -1,8 +1,12 @@
 package com.tech.graphql.service;
 
+import com.tech.graphql.constant.Category;
+import com.tech.graphql.model.Author;
 import com.tech.graphql.model.Book;
+import com.tech.graphql.repository.AuthorRepository;
 import com.tech.graphql.repository.BookRepository;
 import com.tech.graphql.service.datafetcher.AllBooksDataFetcher;
+import com.tech.graphql.service.datafetcher.AuthorDataFetcher;
 import com.tech.graphql.service.datafetcher.BookDataFetcher;
 import com.tech.graphql.service.datafetcher.CreateBookDataFetcher;
 import graphql.GraphQL;
@@ -25,6 +29,9 @@ public class GraphQLService {
     @Autowired
     BookRepository bookRepository;
 
+    @Autowired
+    AuthorRepository authorRepository;
+
     /*Field which will load the graphsql file from resource which has schema definition*/
     @Value("classpath:books.graphql")
     Resource resource;
@@ -41,6 +48,9 @@ public class GraphQLService {
 
     @Autowired
     CreateBookDataFetcher createBookDataFetcher;
+
+    @Autowired
+    AuthorDataFetcher authorDataFetcher;
 
     @PostConstruct
     private void loadSchema() throws IOException {
@@ -63,20 +73,24 @@ public class GraphQLService {
    * So based on the request it will call the respective data fetcher which will query the database*/
     private RuntimeWiring buildRuntimeWiring() {
 
+        System.out.println("Inside run time wiring");
+
         //Below is alternative to add wiring
-        /* RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
+         RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
                 .type(TypeRuntimeWiring.newTypeWiring("Query").dataFetcher("allBooks",allBooksDataFetcher))
                 .type(TypeRuntimeWiring.newTypeWiring("Query").dataFetcher("book",bookDataFetcher))
                 .type(TypeRuntimeWiring.newTypeWiring("Mutation").dataFetcher("createBook",createBookDataFetcher))
-                .build();*/
+                 .type(TypeRuntimeWiring.newTypeWiring("Book").dataFetcher("author",authorDataFetcher))
+                .build();
 
-        return RuntimeWiring.newRuntimeWiring()
+        /*return RuntimeWiring.newRuntimeWiring()
                 .type("Query",typeWiring -> typeWiring
                         .dataFetcher("allBooks",allBooksDataFetcher)
                         .dataFetcher("book",bookDataFetcher))
                 .type("Mutation",typeWiring -> typeWiring
                         .dataFetcher("createBook",createBookDataFetcher))
-                .build();
+                .build();*/
+        return runtimeWiring;
     }
 
     /*To load the dummy data in database*/
@@ -86,17 +100,25 @@ public class GraphQLService {
                 new Book("123", "Book of Clouds", "Kindle Edition",
                         new String[] {
                                 "Chloe Aridjis"
-                        }, "Nov 2017"),
+                        }, "Nov 2017", Category.COMEDY),
                 new Book("124", "Cloud Arch & Engineering", "Orielly",
                         new String[] {
                                 "Peter", "Sam"
-                        }, "Jan 2015"),
+                        }, "Jan 2015",Category.FANTASY),
                 new Book("125", "Java 9 Programming", "Orielly",
                         new String[] {
                                 "Venkat", "Ram"
-                        }, "Dec 2016")
+                        }, "Dec 2016",Category.HORROR)
         ).forEach(book -> {
             bookRepository.save(book);
+        });
+
+        Stream.of(
+                new Author("1","Gaurav",31,"123"),
+                new Author("2","Nayan",32,"124"),
+                new Author("3","Pratik",30,"125")
+        ).forEach(author -> {
+            authorRepository.save(author);
         });
     }
 
